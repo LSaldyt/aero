@@ -13,8 +13,8 @@
     "Split key value pair by seperating : "
     (let ((index (position #\: line)))
         (cond ((not index) nil)
-            (t (list (subseq line (+ 1 index))
-                  (subseq line 0 index)))
+            (t (list (string-trim " " (subseq line 0 index))
+                     (string-trim " " (subseq line (+ 1 index)))))
             )))
 
 (defun replace-all (s part replacement &key (test #'char=))
@@ -37,15 +37,14 @@ is replaced with replacement."
     do (let ((a (elt replacement 0))
              (b (elt replacement 1)))
          (setf line (replace-all line a b))))
-  (return-from remove-redundant line)
-  )
+  (return-from remove-redundant line))
 
 (let ((replacements (mapcar 'split (get-file "replacements.txt")))
       )
-  (let ((new (mapcar (lambda (line) (remove-redundant replacements line)) (get-file "test.txt"))))
+  (format t "~a~%" replacements)
+  (let ((new (mapcar (lambda (line) (remove-redundant replacements line)) (get-file "input.txt"))))
     (format t "~a~%" new)
     (write-file "output.txt" new)
     )
-  ;; (format t "~a~%" (mapcar (lambda (line) (remove-redundant replacements line)) (get-file "test.txt")))
   )
 
