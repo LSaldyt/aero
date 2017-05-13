@@ -53,7 +53,7 @@ is replaced with replacement."
   (return-from remove-redundant line))
 
 (let ((replacements (build-replacements (get-file "replacements.txt"))))
-  (print replacements)
+  ;; (print replacements)
   (let ((new (mapcar (lambda (line) (remove-redundant replacements line)) (get-file "input.txt"))))
-    (show new)
+    ;; (show new)
     (write-file "output.txt" new)))
