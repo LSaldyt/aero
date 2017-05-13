@@ -1,2 +1,2 @@
-a : b
-c : d
+in order to : to
+the reason for, on the grounds that : because

@@ -9,13 +9,26 @@
       (dolist (line lines)
           (format out "~a~%" line))))
 
-(defun split (line)
-    "Split key value pair by seperating : "
-    (let ((index (position #\: line)))
-        (cond ((not index) nil)
-            (t (list (string-trim " " (subseq line 0 index))
-                     (string-trim " " (subseq line (+ 1 index)))))
-            )))
+(defun show (s)
+  (format t "~a~%" s))
+
+(defun split (line &optional (delim #\,))
+    "Split key value pair by seperating with `delim`"
+    (let ((index (position delim line)))
+        (cond ((not index) (list line))
+              (t (list (string-trim " " (subseq line 0 index))
+                       (string-trim " " (subseq line (+ 1 index))))))))
+
+"
+(defun build-replacements (filelines)
+    (mapcar (lambda (line) (split line #\:)) filelines))
+"
+(defun build-replacements (filelines)
+  (let ((replacement-pairs (mapcar (lambda (line) (split line #\:)) filelines)))
+       (loop for pair in replacement-pairs
+             do (show pair)
+             append (loop for key in (split (elt pair 0))
+                           collect (list key (elt pair 1))))))
 
 (defun replace-all (s part replacement &key (test #'char=))
 "Returns a new string in which all the occurences of the part 
@@ -39,12 +52,8 @@ is replaced with replacement."
          (setf line (replace-all line a b))))
   (return-from remove-redundant line))
 
-(let ((replacements (mapcar 'split (get-file "replacements.txt")))
-      )
-  (format t "~a~%" replacements)
+(let ((replacements (build-replacements (get-file "replacements.txt"))))
+  (print replacements)
   (let ((new (mapcar (lambda (line) (remove-redundant replacements line)) (get-file "input.txt"))))
-    (format t "~a~%" new)
-    (write-file "output.txt" new)
-    )
-  )
-
+    (show new)
+    (write-file "output.txt" new)))
