@@ -24,12 +24,6 @@
         (t (loop for inner in (split line (car delimiters)) 
             append (split-with inner (cdr delimiters))))))
 
-(defun build-replacements (filelines)
-    (let ((replacement-pairs (mapcar (lambda (line) (split line #\:)) filelines)))
-        (loop for pair in replacement-pairs
-            append (loop for key in (split (elt pair 0))
-                collect (list key (elt pair 1))))))
-
 (defun replace-all (s part replacement &key (test #'char-equal))
 "Returns a new string in which all the occurences of the part 
 is replaced with replacement."
@@ -45,21 +39,13 @@ is replaced with replacement."
                 when pos do (write-string replacement out)
                 while pos))) 
 
-(defun remove-redundant (replacements line)
-    (loop for replacement in replacements
-        do (let ((a (elt replacement 0))
-            (b (elt replacement 1)))
-            (setf line (replace-all line a b))))
-    (return-from remove-redundant line))
+(defun any-in (s substrings)
+  (loop for substr in substrings
+        when (search substr s) do (return-from any-in t))
+  (return-from any-in nil))
 
-(defun sentences (line)
-    (split-with line (list #\! #\. #\?)))
-
-(defun edit-lines (replacements inputlines)
-    (mapcar (lambda (line) (remove-redundant replacements line)) inputlines))
-
-(let ((replacements (build-replacements (get-file "replacements.txt")))
-            (inputlines (get-file "input.txt")))
-    (let ((new (edit-lines replacements inputlines)))
-        (show new)
-        (write-file "output.txt" new)))
+(defun filter-list-in-two (predicate l)
+  (loop for x in l
+    if (funcall predicate x) collect x into yes
+    else collect x into no
+    finally (return (values yes no))))

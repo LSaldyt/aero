@@ -1,2 +1,2 @@
 #!/bin/bash
-sbcl --script aero.lisp
+sbcl --script contex/contex.lisp
