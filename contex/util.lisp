@@ -19,6 +19,9 @@
             (t (append (list (string-trim " " (subseq line 0 index)))
                 (split (string-trim " " (subseq line (+ 1 index))) delim))))))
 
+(defun join (items &optional (with (format nil "~a" #\linefeed)))
+  (reduce (lambda (a b) (concatenate 'string a with b)) items))
+
 (defun split-with (line delimiters)
     (cond ((not delimiters) (list line))
         (t (loop for inner in (split line (car delimiters)) 
@@ -49,3 +52,9 @@ is replaced with replacement."
     if (funcall predicate x) collect x into yes
     else collect x into no
     finally (return (values yes no))))
+
+(defun set-hash (k v table)
+    (setf (gethash k table) v))
+
+(defun zip (&rest lists)
+  (apply #'mapcar #'list lists))
