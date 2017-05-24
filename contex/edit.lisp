@@ -19,8 +19,3 @@
 (defun edit-lines (replacements inputlines)
     (mapcar (lambda (line) (remove-redundant replacements line)) inputlines))
 
-(let ((replacements (build-replacements (get-file "replacements.txt")))
-            (inputlines (get-file "input.txt")))
-    (let ((new (edit-lines replacements inputlines)))
-        (show new)
-        (write-file "output.txt" new)))

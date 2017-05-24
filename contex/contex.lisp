@@ -1,4 +1,5 @@
 (load "contex/util.lisp")
+(load "contex/edit.lisp")
 
 (defparameter *special-fields* (list "Title:" "Author:" "Date:"))
 
@@ -35,9 +36,10 @@
     collect tline)))
 
 (defun create-paper (filename templatefile outfile)
-  (let ((templatelines (get-file templatefile)))
+  (let ((templatelines (get-file templatefile))
+        (replacements (build-replacements (get-file "data/replacements.txt"))))
     (multiple-value-bind (body tags)
       (split-body filename)
-      (write-file outfile (format-with body tags templatelines)))))
+      (write-file outfile (edit-lines replacements (format-with body tags templatelines))))))
 
 (create-paper "data/example.ctex" "templates/template.tex" "output/output.tex")
