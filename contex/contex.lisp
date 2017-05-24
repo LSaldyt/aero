@@ -40,4 +40,4 @@
       (split-body filename)
       (write-file outfile (format-with body tags templatelines)))))
 
-(create-paper "data/example.ctex" "templates/template.tex" "output.tex")
+(create-paper "data/example.ctex" "templates/template.tex" "output/output.tex")
