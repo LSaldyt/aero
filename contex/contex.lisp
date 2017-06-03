@@ -6,10 +6,6 @@
 (defun to-placeholder (field)
   (format nil "__~a__" (string-upcase (string-right-trim ":" field))))
 
-(show (to-placeholder "Title:"))
-
-(show (zip (list 1 2 3) (list 4 5 6)))
-
 (defun to-tag-table (tags)
   (let ((tag-table (make-hash-table)))
     (loop for (tag field) in (zip tags *special-fields*)

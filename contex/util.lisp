@@ -12,20 +12,24 @@
 (defun show (s)
     (format t "~a~%" s))
 
-(defun split (line &optional (delim #\,))
+(defun to-str (c)
+  (format nil "~a" c))
+
+(defun split (line &optional (delim #\,) (keep nil))
     "Split key value pair by seperating with `delim`"
     (let ((index (position delim line)))
         (cond ((not index) (list line))
             (t (append (list (string-trim " " (subseq line 0 index)))
-                (split (string-trim " " (subseq line (+ 1 index))) delim))))))
+                       (list (to-str delim))
+                       (split (string-trim " " (subseq line (+ 1 index))) delim keep))))))
 
-(defun join (items &optional (with (format nil "~a" #\linefeed)))
+(defun join (items &optional (with (to-str #\linefeed)))
   (reduce (lambda (a b) (concatenate 'string a with b)) items))
 
-(defun split-with (line delimiters)
+(defun split-with (line delimiters &optional (keep nil))
     (cond ((not delimiters) (list line))
-        (t (loop for inner in (split line (car delimiters)) 
-            append (split-with inner (cdr delimiters))))))
+        (t (loop for inner in (split line (car delimiters) keep) 
+            append (split-with inner (cdr delimiters) keep)))))
 
 (defun replace-all (s part replacement &key (test #'char-equal))
 "Returns a new string in which all the occurences of the part 
